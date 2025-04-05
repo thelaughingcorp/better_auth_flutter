@@ -3,13 +3,15 @@ import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/constants/app_constants.dart";
-import "package:better_auth_flutter/src/core/local_storage/kv_store.dart"
-    show KVStore;
+import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store_keys.dart";
+import "package:cookie_jar/cookie_jar.dart";
 import "package:http/http.dart" as http;
 
 class Api {
   static final hc = http.Client();
+
+  static final _cookieJar = CookieJar();
 
   static Future<(dynamic, Failure?)> sendRequest(
     String path, {
@@ -42,6 +44,11 @@ class Api {
       port: AppConstants.port,
     );
 
+    final cookies = await _cookieJar.loadForRequest(uri);
+    if (cookies.isNotEmpty) {
+      headers["Cookie"] = cookies.map((c) => "${c.name}=${c.value}").join("; ");
+    }
+
     final http.Response response;
 
     try {
@@ -61,6 +68,15 @@ class Api {
       return (null, Failure(code: BetterAuthError.unKnownError));
     }
 
+    final setCookieHeader = response.headers["set-cookie"];
+    if (setCookieHeader != null) {
+      final cookiesList =
+          setCookieHeader.split(",").map((cookieString) {
+            return Cookie.fromSetCookieValue(cookieString.trim());
+          }).toList();
+      await _cookieJar.saveFromResponse(uri, cookiesList);
+    }
+
     switch (response.statusCode) {
       case 200:
         try {
@@ -75,6 +91,13 @@ class Api {
               ),
             );
           }
+
+          // if (response.headers.containsKey("set-cookie")) {
+          //   final cookie = response.headers["set-cookie"];
+          //   if (cookie != null) {
+          //     log("Cookie: $cookie");
+          //   }
+          // }
 
           return (data, null);
         } catch (e) {
