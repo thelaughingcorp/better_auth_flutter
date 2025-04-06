@@ -7,11 +7,19 @@ import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store_keys.dart";
 import "package:cookie_jar/cookie_jar.dart";
 import "package:http/http.dart" as http;
+import "package:path_provider/path_provider.dart";
 
 class Api {
   static final hc = http.Client();
 
-  static final _cookieJar = CookieJar();
+  static late PersistCookieJar _cookieJar;
+
+  static Future<void> init() async {
+    final cacheDir = await getApplicationCacheDirectory();
+    _cookieJar = PersistCookieJar(
+      storage: FileStorage("${cacheDir.path}/.cookies/"),
+    );
+  }
 
   static Future<(dynamic, Failure?)> sendRequest(
     String path, {
