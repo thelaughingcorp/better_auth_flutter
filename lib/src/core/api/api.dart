@@ -100,13 +100,6 @@ class Api {
             );
           }
 
-          // if (response.headers.containsKey("set-cookie")) {
-          //   final cookie = response.headers["set-cookie"];
-          //   if (cookie != null) {
-          //     log("Cookie: $cookie");
-          //   }
-          // }
-
           return (data, null);
         } catch (e) {
           return (

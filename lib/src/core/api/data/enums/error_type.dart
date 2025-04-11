@@ -26,6 +26,7 @@ enum BetterAuthError {
   failedToUnlinkLastAccount,
   accountNotFound,
   failedToSignOut,
+  invalidResponse,
 }
 
 extension BetterAuthErrorMessageExtension on BetterAuthError {
@@ -85,6 +86,8 @@ extension BetterAuthErrorMessageExtension on BetterAuthError {
         return "Account not found";
       case BetterAuthError.failedToSignOut:
         return "Failed to sign out";
+      case BetterAuthError.invalidResponse:
+        return "Invalid response";
     }
   }
 }
@@ -146,6 +149,8 @@ extension BetterAuthErrorExtension on BetterAuthError {
         return "ACCOUNT_NOT_FOUND";
       case BetterAuthError.failedToSignOut:
         return "FAILED_TO_SIGN_OUT";
+      case BetterAuthError.invalidResponse:
+        return "INVALID_RESPONSE";
     }
   }
 }
