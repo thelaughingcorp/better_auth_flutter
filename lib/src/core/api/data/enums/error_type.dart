@@ -27,6 +27,7 @@ enum BetterAuthError {
   accountNotFound,
   failedToSignOut,
   invalidResponse,
+  noGoogleUserFound,
 }
 
 extension BetterAuthErrorMessageExtension on BetterAuthError {
@@ -88,6 +89,8 @@ extension BetterAuthErrorMessageExtension on BetterAuthError {
         return "Failed to sign out";
       case BetterAuthError.invalidResponse:
         return "Invalid response";
+      case BetterAuthError.noGoogleUserFound:
+        return "No Google user found.";
     }
   }
 }
@@ -151,6 +154,8 @@ extension BetterAuthErrorExtension on BetterAuthError {
         return "FAILED_TO_SIGN_OUT";
       case BetterAuthError.invalidResponse:
         return "INVALID_RESPONSE";
+      case BetterAuthError.noGoogleUserFound:
+        return "NO_GOOGLE_USER_FOUND";
     }
   }
 }

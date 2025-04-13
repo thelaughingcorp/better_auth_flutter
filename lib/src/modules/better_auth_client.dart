@@ -3,7 +3,9 @@ import "dart:async";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/api/data/models/user.dart";
 import "package:better_auth_flutter/src/core/constants/app_constants.dart";
+import "package:better_auth_flutter/src/core/enums/social_providers.dart";
 import "package:better_auth_flutter/src/modules/email_and_password.dart";
+import "package:better_auth_flutter/src/modules/id_token_auth.dart";
 import "package:better_auth_flutter/src/modules/session_management.dart";
 
 class BetterAuthClient {
@@ -30,6 +32,12 @@ class BetterAuthClient {
   signInWithEmailAndPassword = EmailAndPassword.signInWithEmailAndPassword;
 
   Future<Failure?> Function() signOut = EmailAndPassword.signOut;
+
+  Future<(User?, Failure?)> Function({
+    required SocialProvider provider,
+    required String idToken,
+  })
+  signInWithIdToken = IdTokenAuth.signInWithIdToken;
 
   void startAutoRefreshSession() async {
     stopAutoRefreshSession();

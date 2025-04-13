@@ -1,13 +1,12 @@
 import "dart:convert";
 import "dart:developer";
-
-import "package:better_auth_flutter/better_auth_flutter.dart";
 import "package:better_auth_flutter/src/core/api/api.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/api/data/models/session.dart";
 import "package:better_auth_flutter/src/core/api/data/models/user.dart";
+import "package:better_auth_flutter/src/core/constants/app_constants.dart";
 import "package:better_auth_flutter/src/core/constants/app_endpoints.dart";
 import "../core/local_storage/kv_store.dart";
 import "../core/local_storage/kv_store_keys.dart";

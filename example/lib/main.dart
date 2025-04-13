@@ -13,6 +13,10 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: "Better Auth Flutter", home: Home());
+    return MaterialApp(
+      title: "Better Auth Flutter",
+      home: Home(),
+      theme: ThemeData.dark(useMaterial3: true),
+    );
   }
 }

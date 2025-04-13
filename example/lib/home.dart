@@ -54,6 +54,8 @@ class Home extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 16,
           children: [
             ElevatedButton(onPressed: signUp, child: Text("Sign Up")),
             ElevatedButton(onPressed: signIn, child: Text("Sign In")),

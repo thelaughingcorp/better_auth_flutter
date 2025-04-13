@@ -5,21 +5,12 @@ import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/constants/app_constants.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store_keys.dart";
-import "package:cookie_jar/cookie_jar.dart";
 import "package:http/http.dart" as http;
-import "package:path_provider/path_provider.dart";
 
 class Api {
   static final hc = http.Client();
 
-  static late PersistCookieJar _cookieJar;
-
-  static Future<void> init() async {
-    final cacheDir = await getApplicationCacheDirectory();
-    _cookieJar = PersistCookieJar(
-      storage: FileStorage("${cacheDir.path}/.cookies/"),
-    );
-  }
+  static Future<void> init() async {}
 
   static Future<(dynamic, Failure?)> sendRequest(
     String path, {
@@ -52,11 +43,6 @@ class Api {
       port: AppConstants.port,
     );
 
-    final cookies = await _cookieJar.loadForRequest(uri);
-    if (cookies.isNotEmpty) {
-      headers["Cookie"] = cookies.map((c) => "${c.name}=${c.value}").join("; ");
-    }
-
     final http.Response response;
 
     try {
@@ -74,15 +60,6 @@ class Api {
       }
     } catch (e) {
       return (null, Failure(code: BetterAuthError.unKnownError));
-    }
-
-    final setCookieHeader = response.headers["set-cookie"];
-    if (setCookieHeader != null) {
-      final cookiesList =
-          setCookieHeader.split(",").map((cookieString) {
-            return Cookie.fromSetCookieValue(cookieString.trim());
-          }).toList();
-      await _cookieJar.saveFromResponse(uri, cookiesList);
     }
 
     switch (response.statusCode) {
