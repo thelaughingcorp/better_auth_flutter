@@ -36,6 +36,7 @@ class BetterAuthClient {
   Future<(User?, Failure?)> Function({
     required SocialProvider provider,
     required String idToken,
+    required String accessToken,
   })
   signInWithIdToken = IdTokenAuth.signInWithIdToken;
 

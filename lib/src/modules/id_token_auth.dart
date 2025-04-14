@@ -12,12 +12,17 @@ class IdTokenAuth {
   static Future<(User?, Failure?)> signInWithIdToken({
     required SocialProvider provider,
     required String idToken,
+    required String accessToken,
   }) async {
     try {
       final (result, error) = await Api.sendRequest(
         AppEndpoints.socialSignIn,
         method: MethodType.post,
-        body: {"provider": provider.id, "idToken": idToken},
+        body: {
+          "provider": provider.id,
+          "idToken": {"token": idToken, "accessToken": accessToken},
+          "disableRedirect": true,
+        },
       );
 
       if (error != null) return (null, error);
@@ -28,9 +33,9 @@ class IdTokenAuth {
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
 
-      final accessToken = result["accessToken"] as String;
+      final newAccessToken = result["accessToken"] as String;
 
-      await KVStore.set(KVStoreKeys.accessToken, accessToken);
+      await KVStore.set(KVStoreKeys.accessToken, newAccessToken);
       await KVStore.set(KVStoreKeys.user, user.toJson());
 
       return (user, null);
