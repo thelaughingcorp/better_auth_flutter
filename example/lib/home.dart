@@ -84,6 +84,7 @@ class Home extends StatelessWidget {
     final (res, err) = await BetterAuth.instance.client.signInWithIdToken(
       provider: SocialProvider.google,
       idToken: idToken,
+      accessToken: accessToken,
     );
 
     if (err != null) {
