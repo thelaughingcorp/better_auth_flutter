@@ -33,7 +33,7 @@ class IdTokenAuth {
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
 
-      final newAccessToken = result["accessToken"] as String;
+      final newAccessToken = result["token"] as String;
 
       await KVStore.set(KVStoreKeys.accessToken, newAccessToken);
       await KVStore.set(KVStoreKeys.user, user.toJson());
