@@ -1,5 +1,7 @@
+import "package:auto_exporter_annotation/auto_exporter_annotation.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
+@IgnoreExport()
 class KVStore {
   static SharedPreferences? _sharedPreferences;
 
