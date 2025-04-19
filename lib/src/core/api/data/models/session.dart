@@ -37,7 +37,7 @@ class Session {
   factory Session.fromMap(Map<String, dynamic> map) {
     return Session(
       id: map["id"] as String,
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(map["expiresAt"] as int),
+      expiresAt: DateTime.parse(map["expiresAt"] as String),
       token: map["token"] as String,
       createdAt: DateTime.parse(map["createdAt"] as String),
       updatedAt: DateTime.parse(map["updatedAt"] as String),
