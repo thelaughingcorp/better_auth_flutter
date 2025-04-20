@@ -1,5 +1,3 @@
-import "dart:developer";
-
 import "package:better_auth_flutter/src/core/api/api.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
@@ -34,12 +32,6 @@ class IdTokenAuth {
       }
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
-
-      final newAccessToken = result["token"] as String;
-
-      log("New access token: $newAccessToken");
-
-      await KVStore.set(KVStoreKeys.accessToken, newAccessToken);
       await KVStore.set(KVStoreKeys.user, user.toJson());
 
       return (user, null);

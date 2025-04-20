@@ -104,10 +104,6 @@ class Repo {
     log(session.toString());
   }
 
-  static void refreshToken() async {
-    await betterAuth.refreshToken();
-  }
-
   static void listAccounts() async {
     await betterAuth.listAccounts();
   }

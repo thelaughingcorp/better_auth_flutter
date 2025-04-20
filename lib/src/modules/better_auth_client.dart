@@ -1,11 +1,11 @@
 import "dart:async";
 import "dart:developer";
-
-import "package:better_auth_flutter/better_auth_flutter.dart";
+import "package:better_auth_flutter/src/core/api/api.dart";
+import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/api/data/models/session.dart";
 import "package:better_auth_flutter/src/core/api/data/models/user.dart";
-import "package:better_auth_flutter/src/core/constants/app_constants.dart";
+import "package:better_auth_flutter/src/core/constants/app_endpoints.dart";
 import "package:better_auth_flutter/src/core/enums/social_providers.dart";
 import "package:better_auth_flutter/src/modules/email_and_password.dart";
 import "package:better_auth_flutter/src/modules/id_token_auth.dart";
@@ -15,11 +15,7 @@ class BetterAuthClient {
   static final BetterAuthClient _instance = BetterAuthClient._internal();
   factory BetterAuthClient() => _instance;
 
-  Timer? _autoRefreshSessionTicker;
-
-  BetterAuthClient._internal() {
-    startAutoRefreshSession();
-  }
+  BetterAuthClient._internal();
 
   Future<(Map<String, dynamic>?, Failure?)> Function({
     required String email,
@@ -46,8 +42,6 @@ class BetterAuthClient {
   Future<(Session?, Failure?)> Function() getSession =
       SessionManagement.getSession;
 
-  Future<void> Function() refreshToken = SessionManagement.refreshToken;
-
   Future<void> Function() listAccounts = () async {
     try {
       final (response, failure) = await Api.sendRequest(
@@ -56,7 +50,7 @@ class BetterAuthClient {
       );
 
       if (failure != null) {
-        log("Error listing accounts: ${failure.message}");
+        log("Error listing accounts: ${failure.toJson()}");
         return;
       }
 
@@ -70,17 +64,4 @@ class BetterAuthClient {
       return;
     }
   };
-
-  void startAutoRefreshSession() async {
-    stopAutoRefreshSession();
-
-    _autoRefreshSessionTicker = Timer.periodic(
-      AppConstants.autoRefreshSessionInterval,
-      (Timer t) => SessionManagement.autoRefreshTokenTick(),
-    );
-  }
-
-  void stopAutoRefreshSession() {
-    _autoRefreshSessionTicker?.cancel();
-  }
 }

@@ -44,9 +44,6 @@ class EmailAndPassword {
       }
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
-      final token = result["token"] as String;
-
-      await KVStore.set(KVStoreKeys.accessToken, token);
 
       return (user, null);
     } catch (e) {
@@ -74,7 +71,6 @@ class EmailAndPassword {
         return Failure(code: BetterAuthError.failedToSignOut);
       }
 
-      await KVStore.remove(KVStoreKeys.accessToken);
       await KVStore.remove(KVStoreKeys.session);
 
       return null;
