@@ -1,5 +1,7 @@
 import "dart:async";
+import "dart:developer";
 
+import "package:better_auth_flutter/better_auth_flutter.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/api/data/models/session.dart";
 import "package:better_auth_flutter/src/core/api/data/models/user.dart";
@@ -43,6 +45,31 @@ class BetterAuthClient {
 
   Future<(Session?, Failure?)> Function() getSession =
       SessionManagement.getSession;
+
+  Future<void> Function() refreshToken = SessionManagement.refreshToken;
+
+  Future<void> Function() listAccounts = () async {
+    try {
+      final (response, failure) = await Api.sendRequest(
+        AppEndpoints.listAccounts,
+        method: MethodType.get,
+      );
+
+      if (failure != null) {
+        log("Error listing accounts: ${failure.message}");
+        return;
+      }
+
+      if (response == null) {
+        return;
+      }
+
+      log("List accounts: $response");
+    } catch (e) {
+      log("Error listing accounts: $e");
+      return;
+    }
+  };
 
   void startAutoRefreshSession() async {
     stopAutoRefreshSession();

@@ -12,6 +12,35 @@ import "../core/local_storage/kv_store.dart";
 import "../core/local_storage/kv_store_keys.dart";
 
 class SessionManagement {
+  static Future<void> refreshToken() async {
+    try {
+      final (result, error) = await Api.sendRequest(
+        AppEndpoints.refreshToken,
+        method: MethodType.post,
+        body: {
+          "providerId": "google",
+          "accountId": "100196553826168367924",
+          "userId": "DkH10ea7UIQMAcXkv49Wdhlx46n02Ave",
+        },
+      );
+
+      if (error != null) {
+        log("Error in refreshToken: $error");
+        return;
+      }
+
+      if (result is! Map<String, dynamic>) {
+        log("Error in refreshToken: Invalid response");
+        return;
+      }
+
+      log("Refresh token result: $result");
+    } catch (e) {
+      log("Error in refreshToken: $e");
+      return;
+    }
+  }
+
   static Future<(Session?, Failure?)> getSession() async {
     try {
       final (result, error) = await Api.sendRequest(

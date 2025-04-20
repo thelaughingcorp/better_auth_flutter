@@ -24,6 +24,14 @@ class Home extends StatelessWidget {
               onPressed: Repo.getSession,
               child: Text("Get Session"),
             ),
+            ElevatedButton(
+              onPressed: Repo.refreshToken,
+              child: Text("Refresh Token"),
+            ),
+            ElevatedButton(
+              onPressed: Repo.listAccounts,
+              child: Text("List Accounts"),
+            ),
           ],
         ),
       ),
