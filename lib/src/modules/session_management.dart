@@ -10,7 +10,7 @@ import "../core/local_storage/kv_store.dart";
 import "../core/local_storage/kv_store_keys.dart";
 
 class SessionManagement {
-  static Future<(Session?, Failure?)> getSession() async {
+  static Future<((Session?, User?)?, Failure?)> getSession() async {
     try {
       final (result, error) = await Api.sendRequest(
         AppEndpoints.getSession,
@@ -41,7 +41,7 @@ class SessionManagement {
       await KVStore.set(KVStoreKeys.user, user.toJson());
       await KVStore.set(KVStoreKeys.session, session.toJson());
 
-      return (session, null);
+      return ((session, user), null);
     } catch (e) {
       return (
         null,

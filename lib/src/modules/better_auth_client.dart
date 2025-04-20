@@ -39,7 +39,7 @@ class BetterAuthClient {
   })
   signInWithIdToken = IdTokenAuth.signInWithIdToken;
 
-  Future<(Session?, Failure?)> Function() getSession =
+  Future<((Session?, User?)?, Failure?)> Function() getSession =
       SessionManagement.getSession;
 
   Future<void> Function() listAccounts = () async {
