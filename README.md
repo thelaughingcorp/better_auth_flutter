@@ -1,39 +1,44 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# better_auth_flutter
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Flutter client-side SDK for Better Auth — simplifies integration with the Better Auth backend. Supports email/password authentication, social login, session management, and secure storage.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Email/password sign up, sign in, and sign out
+- Social login (Google, Facebook, etc.) via ID token
+- Automatic session retrieval and validation
+- Persistent cookie-based sessions with `cookie_jar`
+- Secure local storage of user and session data with `shared_preferences`
+- Easy-to-use singleton client: `BetterAuth.instance.client`
 
-## Getting started
+## Getting Started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+### Installation
 
-## Usage
+Add to your `pubspec.yaml`:
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  better_auth_flutter: ^0.0.1
 ```
 
-## Additional information
+Then run:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```bash
+flutter pub get
+```
+
+### Initialization
+
+Before using any API, initialize the SDK (e.g., in your `main.dart`):
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:better_auth_flutter/better_auth_flutter.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  BetterAuth.init();
+  runApp(MyApp());
+}
+```

@@ -1,7 +1,9 @@
 name: better_auth_flutter
 description: "Flutter Client side SDK for Better Auth"
 version: 0.0.1
-homepage: https://stormej.me
+homepage: https://stormej.mehttps://github.com/ekakshjanweja/better_auth_flutter
+repository: https://github.com/ekakshjanweja/better_auth_flutter
+issue_tracker: https://github.com/ekakshjanweja/better_auth_flutter/issues
 
 environment:
   sdk: ^3.7.0
