@@ -6,10 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class Repo {
   static final betterAuth = BetterAuth.instance.client;
 
-  static final GoogleSignIn googleSignIn = GoogleSignIn(
-    serverClientId:
-        "455710607825-8gl4r9sdgubo5lrqg46194fjqmfq98tp.apps.googleusercontent.com",
-  );
+  static final GoogleSignIn googleSignIn = GoogleSignIn(serverClientId: "");
 
   static void signUp() async {
     final (result, error) = await BetterAuth.instance.client
