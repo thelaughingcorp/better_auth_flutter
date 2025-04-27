@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BetterAuth.init(baseUrl: Uri(scheme: "http", host: "localhost", port: 8080));
+  BetterAuth.init(baseUrl: Uri(scheme: "http", host: "localhost", port: 8000));
   runApp(const App());
 }
 

@@ -38,7 +38,7 @@ import 'package:better_auth_flutter/better_auth_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BetterAuth.init();
+  BetterAuth.init(baseUrl: Uri(scheme: "http", host: "localhost", port: 8080)); //URI of your backend
   runApp(MyApp());
 }
 ```
