@@ -2,7 +2,7 @@ import "dart:convert";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
-import "package:better_auth_flutter/src/core/constants/app_constants.dart";
+import "package:better_auth_flutter/src/core/config/config.dart";
 import "package:cookie_jar/cookie_jar.dart";
 import "package:http/http.dart" as http;
 import "package:path_provider/path_provider.dart";
@@ -29,7 +29,7 @@ class Api {
     int retry = 0,
   }) async {
     headers ??= {};
-    host ??= AppConstants.defaultHost;
+    host ??= Config.host;
 
     headers.addAll({
       "Accept": "application/json",
@@ -37,11 +37,11 @@ class Api {
     });
 
     final Uri uri = Uri(
-      scheme: AppConstants.scheme,
+      scheme: Config.scheme,
       host: host,
       path: path,
       queryParameters: queryParameters,
-      port: AppConstants.port,
+      port: Config.port,
     );
 
     final cookies = await _cookieJar.loadForRequest(

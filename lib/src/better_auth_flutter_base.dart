@@ -1,19 +1,30 @@
 import "package:better_auth_flutter/better_auth_flutter.dart";
+import "package:better_auth_flutter/src/core/config/config.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
 
 class BetterAuth {
-  BetterAuth._() {
-    init();
-  }
+  BetterAuth._();
 
   static final BetterAuth _instance = BetterAuth._();
   static BetterAuth get instance => _instance;
 
-  final BetterAuthClient _client = BetterAuthClient();
-  BetterAuthClient get client => _client;
+  static bool _isInitialized = false;
 
-  static void init() async {
+  final BetterAuthClient _client = BetterAuthClient();
+  BetterAuthClient get client {
+    if (!_isInitialized) {
+      throw Exception(
+        "BetterAuth not initialized. Call BetterAuth.init() first.",
+      );
+    }
+    return _client;
+  }
+
+  static Future<void> init({required Uri baseUrl}) async {
+    if (_isInitialized) return;
     await KVStore.init();
     await Api.init();
+    Config.initialize(uri: baseUrl);
+    _isInitialized = true;
   }
 }
