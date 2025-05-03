@@ -2,6 +2,8 @@
 
 Flutter client-side SDK for Better Auth — simplifies integration with the Better Auth backend. Supports email/password authentication, social login, session management, and secure storage.
 
+P.S if you have any suggestions or want to contribute to this, reach out to me here https://x.com/ekaksh_janweja
+
 ## Features
 
 - Email/password sign up, sign in, and sign out

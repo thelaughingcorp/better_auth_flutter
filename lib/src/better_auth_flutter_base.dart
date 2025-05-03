@@ -1,6 +1,7 @@
-import "package:better_auth_flutter/better_auth_flutter.dart";
+import "package:better_auth_flutter/src/core/api/api.dart";
 import "package:better_auth_flutter/src/core/config/config.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
+import "package:better_auth_flutter/src/modules/better_auth_client.dart";
 
 class BetterAuth {
   BetterAuth._();
