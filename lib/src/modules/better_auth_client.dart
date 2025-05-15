@@ -1,4 +1,6 @@
 import "dart:async";
+import "dart:developer";
+import "package:better_auth_flutter/better_auth_flutter.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/api/data/models/session.dart";
 import "package:better_auth_flutter/src/core/api/data/models/user.dart";
@@ -40,4 +42,29 @@ class BetterAuthClient {
       SessionManagement.getSession;
 
   Future<void> Function() listAccounts = Accounts.listAccounts;
+
+  Future<void> Function() loginWithX = () async {
+    try {
+      final (result, error) = await Api.sendRequest(
+        AppEndpoints.socialSignIn,
+        method: MethodType.post,
+        body: {"provider": SocialProvider.x.id},
+      );
+
+      if (error != null) {
+        log("Error logging in with X: ${error.toJson()}");
+        return;
+      }
+
+      if (result is! Map<String, dynamic>) {
+        log("Error logging in with X: Invalid response");
+        return;
+      }
+
+      log("Logged in with X: $result");
+    } catch (e) {
+      log("Error logging in with X: $e");
+      return;
+    }
+  };
 }
