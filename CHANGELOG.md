@@ -8,4 +8,10 @@
 
 ## 0.0.3
 
-* Minor Fixes
+* Minor fixes
+
+## 0.0.4
+
+* Add send verification email
+* Add verify email
+* Add list accounts
