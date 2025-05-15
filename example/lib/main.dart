@@ -45,10 +45,20 @@ class Home extends StatelessWidget {
               onPressed: Repo.getSession,
               child: Text("Get Session"),
             ),
-
             ElevatedButton(
               onPressed: Repo.listAccounts,
               child: Text("List Accounts"),
+            ),
+            ElevatedButton(
+              onPressed: Repo.sendVerificationEmail,
+              child: Text("Send Verification Email"),
+            ),
+            ElevatedButton(
+              onPressed:
+                  () => Repo.verifyEmail(
+                    "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Impla2Frc2hAZ21haWwuY29tIiwiaWF0IjoxNzQ3MzIzNjg0LCJleHAiOjE3NDczMjcyODR9.xzJO-ElQReO97i_jnpIzND-jLgLCqNM5_WQXqebqF3k",
+                  ),
+              child: Text("Verify Email"),
             ),
           ],
         ),
@@ -65,9 +75,9 @@ class Repo {
   static void signUp() async {
     final (result, error) = await BetterAuth.instance.client
         .signUpWithEmailAndPassword(
-          email: "test@test.com",
-          password: "password",
-          name: "test",
+          email: "jekaksh@gmail.com",
+          password: "ekaksh123",
+          name: "ekaksh",
         );
 
     if (error != null) {
@@ -81,8 +91,8 @@ class Repo {
   static void signIn() async {
     final (result, error) = await BetterAuth.instance.client
         .signInWithEmailAndPassword(
-          email: "test@test.com",
-          password: "password",
+          email: "jekaksh@gmail.com",
+          password: "ekaksh123",
         );
 
     if (error != null) {
@@ -155,7 +165,44 @@ class Repo {
     log(session.toString());
   }
 
+  static void sendVerificationEmail() async {
+    final error = await BetterAuth.instance.client.sendVerificationEmail(
+      email: "jekaksh@gmail.com",
+    );
+
+    if (error != null) {
+      log(error.message.toString());
+      return;
+    }
+    log("Verification email sent");
+  }
+
+  static void verifyEmail(String token) async {
+    final error = await BetterAuth.instance.client.verifyEmail(
+      verificationToken: token,
+    );
+
+    if (error != null) {
+      log(error.message.toString());
+      return;
+    }
+  }
+
   static void listAccounts() async {
-    await betterAuth.listAccounts();
+    final (accounts, error) = await BetterAuth.instance.client.listAccounts();
+
+    if (error != null) {
+      log(error.message.toString());
+      return;
+    }
+
+    if (accounts == null) {
+      log("No accounts found");
+      return;
+    }
+
+    for (Account account in accounts) {
+      log(account.toString());
+    }
   }
 }

@@ -90,7 +90,6 @@ class Api {
       case 200:
         try {
           final data = jsonDecode(response.body);
-
           return (data, null);
         } catch (e) {
           return (

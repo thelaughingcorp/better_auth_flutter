@@ -28,6 +28,8 @@ enum BetterAuthError {
   failedToSignOut,
   invalidResponse,
   noGoogleUserFound,
+  failedToSendVerificationEmail,
+  failedToVerifyEmail,
 }
 
 extension BetterAuthErrorMessageExtension on BetterAuthError {
@@ -91,6 +93,10 @@ extension BetterAuthErrorMessageExtension on BetterAuthError {
         return "Invalid response";
       case BetterAuthError.noGoogleUserFound:
         return "No Google user found.";
+      case BetterAuthError.failedToSendVerificationEmail:
+        return "Failed to send verification email";
+      case BetterAuthError.failedToVerifyEmail:
+        return "Failed to verify email";
     }
   }
 }
@@ -156,6 +162,10 @@ extension BetterAuthErrorExtension on BetterAuthError {
         return "INVALID_RESPONSE";
       case BetterAuthError.noGoogleUserFound:
         return "NO_GOOGLE_USER_FOUND";
+      case BetterAuthError.failedToSendVerificationEmail:
+        return "FAILED_TO_SEND_VERIFICATION_EMAIL";
+      case BetterAuthError.failedToVerifyEmail:
+        return "FAILED_TO_VERIFY_EMAIL";
     }
   }
 }

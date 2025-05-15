@@ -1,28 +1,31 @@
-import "dart:developer";
-
 import "package:better_auth_flutter/better_auth_flutter.dart";
+import "package:better_auth_flutter/src/core/api/data/models/account.dart";
 
 class Accounts {
-  static Future<void> listAccounts() async {
+  static Future<(List<Account>?, Failure?)> listAccounts() async {
     try {
-      final (response, failure) = await Api.sendRequest(
+      final (result, error) = await Api.sendRequest(
         AppEndpoints.listAccounts,
         method: MethodType.get,
       );
 
-      if (failure != null) {
-        log("Error listing accounts: ${failure.toJson()}");
-        return;
-      }
+      if (error != null) return (null, error);
 
-      if (response == null) {
-        return;
-      }
+      if (result is! List) throw Exception("Invalid response format");
 
-      log("List accounts: $response");
+      final List<Account> accounts =
+          result
+              .map(
+                (account) => Account.fromMap(account as Map<String, dynamic>),
+              )
+              .toList();
+
+      return (accounts, null);
     } catch (e) {
-      log("Error listing accounts: $e");
-      return;
+      return (
+        null,
+        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+      );
     }
   }
 }

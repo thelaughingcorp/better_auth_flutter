@@ -2,7 +2,7 @@ import "package:better_auth_flutter/better_auth_flutter.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store_keys.dart";
 
-class EmailAndPassword {
+class Auth {
   static Future<(Map<String, dynamic>?, Failure?)> signUpWithEmailAndPassword({
     required String email,
     required String password,
@@ -44,6 +44,40 @@ class EmailAndPassword {
       }
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
+
+      return (user, null);
+    } catch (e) {
+      return (
+        null,
+        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+      );
+    }
+  }
+
+  static Future<(User?, Failure?)> signInWithIdToken({
+    required SocialProvider provider,
+    required String idToken,
+    required String accessToken,
+  }) async {
+    try {
+      final (result, error) = await Api.sendRequest(
+        AppEndpoints.socialSignIn,
+        method: MethodType.post,
+        body: {
+          "provider": provider.id,
+          "idToken": {"token": idToken, "accessToken": accessToken},
+          "disableRedirect": true,
+        },
+      );
+
+      if (error != null) return (null, error);
+
+      if (result is! Map<String, dynamic>) {
+        return (null, Failure(code: BetterAuthError.invalidResponse));
+      }
+
+      final user = User.fromMap(result["user"] as Map<String, dynamic>);
+      await KVStore.set(KVStoreKeys.user, user.toJson());
 
       return (user, null);
     } catch (e) {
