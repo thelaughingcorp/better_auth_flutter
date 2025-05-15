@@ -2,7 +2,6 @@ import "package:better_auth_flutter/src/core/api/api.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
 import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
-import "package:better_auth_flutter/src/core/api/data/models/user.dart";
 import "package:better_auth_flutter/src/core/constants/app_endpoints.dart";
 
 class Verification {
