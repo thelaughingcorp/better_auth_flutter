@@ -4,8 +4,7 @@ class AppEndpoints {
   static const String signInWithEmailAndPassword = "/sign-in/email";
   static const String signOut = "/sign-out";
   static const String socialSignIn = "/sign-in/social";
-  static const String refreshToken = "/refresh-token";
   static const String listAccounts = "/list-accounts";
-  static const String sendVerificationEmail  = "/send-verification-email";
+  static const String sendVerificationEmail = "/send-verification-email";
   static const String verifyEmail = "/verify-email";
 }

@@ -39,7 +39,7 @@ class Api {
     final Uri uri = Uri(
       scheme: Config.scheme,
       host: host,
-      path: "/api/auth/$path",
+      path: "/api/auth$path",
       queryParameters: queryParameters,
       port: Config.port,
     );

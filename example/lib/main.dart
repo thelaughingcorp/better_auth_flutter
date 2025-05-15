@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BetterAuth.init(baseUrl: Uri(scheme: "http", host: "localhost", port: 8000));
+  BetterAuth.init(baseUrl: Uri(scheme: "http", host: "10.0.2.2", port: 8000));
   runApp(const App());
 }
 
