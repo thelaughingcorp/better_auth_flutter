@@ -50,10 +50,6 @@ class Home extends StatelessWidget {
               onPressed: Repo.listAccounts,
               child: Text("List Accounts"),
             ),
-            ElevatedButton(
-              onPressed: Repo.loginWithX,
-              child: Text("Login With X"),
-            ),
           ],
         ),
       ),
@@ -161,9 +157,5 @@ class Repo {
 
   static void listAccounts() async {
     await betterAuth.listAccounts();
-  }
-
-  static void loginWithX() async {
-    await betterAuth.loginWithX();
   }
 }

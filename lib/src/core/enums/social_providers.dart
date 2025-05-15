@@ -1,4 +1,4 @@
-enum SocialProvider { google, apple, x }
+enum SocialProvider { google, apple }
 
 extension SocialProviderId on SocialProvider {
   String get id {
@@ -7,8 +7,6 @@ extension SocialProviderId on SocialProvider {
         return "google";
       case SocialProvider.apple:
         return "apple";
-      case SocialProvider.x:
-        return "twitter";
     }
   }
 }
