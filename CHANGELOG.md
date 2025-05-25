@@ -1,3 +1,5 @@
+# Changelog
+
 ## 0.0.1
 
 * Initial Release
@@ -15,3 +17,8 @@
 * Add send verification email
 * Add verify email
 * Add list accounts
+
+## 0.0.5
+
+* Add Social Sign In With All Providers (Redirection to be handled, using something like flutter_web_auth_2)
+* Added multiple social providers

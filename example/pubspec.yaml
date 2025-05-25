@@ -13,9 +13,10 @@ dependencies:
     sdk: flutter
   better_auth_flutter:
     path: ../
-
+  url_launcher: ^6.3.1
   cupertino_icons: ^1.0.8
   google_sign_in: ^6.3.0
+  flutter_web_auth_2: ^4.1.0
 
 dev_dependencies:
   flutter_test:

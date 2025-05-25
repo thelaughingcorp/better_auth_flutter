@@ -37,6 +37,18 @@ class BetterAuthClient {
   })
   signInWithIdToken = Auth.signInWithIdToken;
 
+  Future<(String?, Failure?)> Function({
+    required SocialProvider provider,
+    String? callbackUrl,
+    String? newUserCallbackUrl,
+    String? errorCallbackURL,
+    bool? disableRedirect,
+    List<String>? scopes,
+    String? requestSignUp,
+    String? loginHint,
+  })
+  socialSignIn = Auth.socialSignIn;
+
   Future<((Session?, User?)?, Failure?)> Function() getSession =
       SessionManagement.getSession;
 

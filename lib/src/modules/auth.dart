@@ -88,6 +88,46 @@ class Auth {
     }
   }
 
+  static Future<(String?, Failure?)> socialSignIn({
+    required SocialProvider provider,
+    String? callbackUrl,
+    String? newUserCallbackUrl,
+    String? errorCallbackURL,
+    bool? disableRedirect,
+    List<String>? scopes,
+    String? requestSignUp,
+    String? loginHint,
+  }) async {
+    try {
+      final (result, error) = await Api.sendRequest(
+        AppEndpoints.socialSignIn,
+        method: MethodType.post,
+        body: {
+          "provider": provider.id,
+          if (callbackUrl != null) "callbackURL": callbackUrl,
+          if (newUserCallbackUrl != null)
+            "newUserCallbackURL": newUserCallbackUrl,
+          if (errorCallbackURL != null) "errorCallbackURL": errorCallbackURL,
+          if (disableRedirect != null) "disableRedirect": disableRedirect,
+          if (scopes != null) "scopes": scopes,
+          if (requestSignUp != null) "requestSignUp": requestSignUp,
+          if (loginHint != null) "loginHint": loginHint,
+        },
+      );
+
+      if (error != null) return (null, error);
+
+      final url = result["url"] as String?;
+
+      return (url, null);
+    } catch (e) {
+      return (
+        null,
+        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+      );
+    }
+  }
+
   static Future<Failure?> signOut() async {
     try {
       final (result, error) = await Api.sendRequest(

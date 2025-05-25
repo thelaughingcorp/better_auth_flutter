@@ -1,11 +1,16 @@
 import 'dart:developer';
 import 'package:better_auth_flutter/better_auth_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BetterAuth.init(baseUrl: Uri(scheme: "http", host: "10.0.2.2", port: 8000));
+  BetterAuth.init(
+    baseUrl: Uri.parse(
+      "https://6a2d-2409-40d0-12e2-458d-bc7a-1ebc-8342-ffae.ngrok-free.app",
+    ),
+  );
   runApp(const App());
 }
 
@@ -59,6 +64,29 @@ class Home extends StatelessWidget {
                     "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Impla2Frc2hAZ21haWwuY29tIiwiaWF0IjoxNzQ3MzIzNjg0LCJleHAiOjE3NDczMjcyODR9.xzJO-ElQReO97i_jnpIzND-jLgLCqNM5_WQXqebqF3k",
                   ),
               child: Text("Verify Email"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final (result, error) = await BetterAuth.instance.client
+                    .socialSignIn(
+                      provider: SocialProvider.google,
+                      callbackUrl: "/temp",
+                    );
+
+                if (error != null) {
+                  log(error.message.toString());
+                  return;
+                }
+
+                final res = await FlutterWebAuth2.authenticate(
+                  url: result!.toString(),
+                  callbackUrlScheme:
+                      "com.googleusercontent.apps.455710607825-heimo9nsl1vpp4n98mg0uosg6731hlfk",
+                  options: FlutterWebAuth2Options(),
+                );
+                log("FlutterWebAuth2 result: $res");
+              },
+              child: Text("Google Sign In with Callback"),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ P.S if you have any suggestions or want to contribute to this, reach out to me [
 
 - Email/password sign up, sign in, and sign out
 - Social login (Google & Apple) via ID token
+- Other social providers are supported via web redirection [flutter_web_auth_2](https://pub.dev/packages/flutter_web_auth_2)
 - Automatic session retrieval and validation
 - Persistent cookie-based sessions with `cookie_jar`
 - Easy-to-use singleton client: `BetterAuth.instance.client`
@@ -43,3 +44,96 @@ void main() async {
   runApp(MyApp());
 }
 ```
+
+## Authentication
+
+### Email/Password Authentication
+
+```dart
+// Sign up
+final (result, error) = await BetterAuth.instance.client.signUpWithEmailAndPassword(
+  email: "user@example.com",
+  password: "password123",
+  name: "John Doe",
+);
+
+// Sign in
+final (user, error) = await BetterAuth.instance.client.signInWithEmailAndPassword(
+  email: "user@example.com",
+  password: "password123",
+);
+
+// Sign out
+final error = await BetterAuth.instance.client.signOut();
+```
+
+### OAuth Login
+
+For social authentication, you have two main approaches:
+
+#### ID Token (Recommended for Google & Apple)
+
+For Google and Apple, using ID tokens provides better security and user experience:
+
+##### Google Sign-In
+
+Add `google_sign_in: ^6.1.5` to your dependencies:
+
+```dart
+import 'package:google_sign_in/google_sign_in.dart';
+
+final GoogleSignIn googleSignIn = GoogleSignIn(
+  serverClientId: "YOUR_GOOGLE_CLIENT_ID.googleusercontent.com",
+);
+
+// Google OAuth flow
+final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+// Sign in with Better Auth
+final (user, error) = await BetterAuth.instance.client.signInWithIdToken(
+  provider: SocialProvider.google,
+  idToken: googleAuth.idToken!,
+  accessToken: googleAuth.accessToken!,
+);
+```
+
+#### Apple Sign-In
+
+Add `sign_in_with_apple: ^4.3.0` to your dependencies:
+
+```dart
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+// Apple OAuth flow
+final credential = await SignInWithApple.getAppleIDCredential(
+  scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+);
+
+// Sign in with Better Auth
+final (user, error) = await BetterAuth.instance.client.signInWithIdToken(
+  provider: SocialProvider.apple,
+  idToken: credential.identityToken!,
+  accessToken: credential.authorizationCode!,
+);
+```
+
+#### Redirect-Based OAuth
+
+For other providers, use redirect-based authentication:
+
+```dart
+// Get OAuth URL
+final (url, error) = await BetterAuth.instance.client.socialSignIn(
+  provider: SocialProvider.github, // or any other provider
+  callbackUrl: "your-app://auth",
+);
+
+// Handle the URL with flutter_web_auth_2 or similar
+```
+
+**Supported Providers:** Google, Apple, GitHub, Facebook, Discord, LinkedIn, Microsoft, Spotify, Twitch, X (Twitter)
+
+## Issues and Support
+
+If you encounter any issues or have feature requests, please raise [here](https://github.com/ekakshjanweja/better_auth_flutter).
