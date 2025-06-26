@@ -1,4 +1,6 @@
-import "dart:convert";
+import "dart:async";
+import "dart:developer";
+
 import "package:better_auth_flutter/src/core/api/api.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
@@ -10,7 +12,9 @@ import "../core/local_storage/kv_store.dart";
 import "../core/local_storage/kv_store_keys.dart";
 
 class SessionManagement {
-  static Future<((Session?, User?)?, Failure?)> getSession() async {
+  static Timer? _refreshTimer;
+
+  static Future<((Session?, User?)?, BetterAuthFailure?)> getSession() async {
     try {
       final (result, error) = await Api.sendRequest(
         AppEndpoints.getSession,
@@ -20,7 +24,7 @@ class SessionManagement {
       if (error != null) return (null, error);
 
       if (result is! Map<String, dynamic>) {
-        return (null, Failure(code: BetterAuthError.invalidResponse));
+        return (null, BetterAuthFailure(code: BetterAuthError.invalidResponse));
       }
 
       final session = Session.fromMap(
@@ -31,7 +35,7 @@ class SessionManagement {
       if (session.expiresAt.isBefore(DateTime.now())) {
         return (
           null,
-          Failure(
+          BetterAuthFailure(
             code: BetterAuthError.sessionExpired,
             message: "Session expired",
           ),
@@ -45,31 +49,54 @@ class SessionManagement {
     } catch (e) {
       return (
         null,
-        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+        BetterAuthFailure(
+          code: BetterAuthError.unKnownError,
+          message: e.toString(),
+        ),
       );
     }
   }
 
-  static Future<(Session?, Failure?)> loadSession() async {
-    try {
-      final sessionString = KVStore.get<String>(KVStoreKeys.session);
+  static void refreshSession(Session session) async {
+    final isSessionValid = session.expiresAt.isBefore(DateTime.now());
 
-      if (sessionString == null) {
-        return (null, Failure(code: BetterAuthError.sessionExpired));
-      }
+    if (isSessionValid) return;
 
-      final session = Session.fromJson(jsonDecode(sessionString));
+    final (result, error) = await getSession();
 
-      if (session.expiresAt.isBefore(DateTime.now())) {
-        return (null, Failure(code: BetterAuthError.sessionExpired));
-      }
-
-      return (session, null);
-    } catch (e) {
-      return (
-        null,
-        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
-      );
+    if (error != null || result == null) {
+      final erroMessage = error?.message ?? "server returned null";
+      throw Exception("Failed to refresh session: $erroMessage");
     }
+
+    final (newSession, user) = result;
+
+    final shouldStartAutoRefreshTicker =
+        newSession != null &&
+        newSession.expiresAt.isAfter(DateTime.now()) &&
+        newSession.expiresAt.difference(DateTime.now()).inHours < 5;
+
+    if (shouldStartAutoRefreshTicker) {
+      startAutoRefreshTicker();
+    }
+  }
+
+  static void startAutoRefreshTicker() {
+    startAutoRefreshTicker();
+    _refreshTimer = Timer.periodic(Duration(hours: 1), (timer) async {
+      try {
+        final (result, error) = await getSession();
+        if (error != null) {
+          log("Auto refresh failed: ${error.message}");
+        }
+      } catch (e) {
+        log("Auto refresh error: $e");
+      }
+    });
+  }
+
+  static void stopAutoRefreshTicker() {
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
   }
 }

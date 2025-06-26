@@ -1,11 +1,11 @@
 import "dart:convert";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 
-class Failure {
+class BetterAuthFailure {
   final BetterAuthError code;
   final String message;
 
-  Failure({
+  BetterAuthFailure({
     required this.code,
     this.message = "An unexpected error occurred. Please try again later.",
   });
@@ -14,8 +14,8 @@ class Failure {
     return <String, dynamic>{"errorType": code.message, "message": message};
   }
 
-  factory Failure.fromMap(Map<String, dynamic> map) {
-    return Failure(
+  factory BetterAuthFailure.fromMap(Map<String, dynamic> map) {
+    return BetterAuthFailure(
       code: BetterAuthError.values.firstWhere(
         (element) => element.message == map["errorType"],
       ),
@@ -25,6 +25,6 @@ class Failure {
 
   String toJson() => json.encode(toMap());
 
-  factory Failure.fromJson(String source) =>
-      Failure.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory BetterAuthFailure.fromJson(String source) =>
+      BetterAuthFailure.fromMap(json.decode(source) as Map<String, dynamic>);
 }

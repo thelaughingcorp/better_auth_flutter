@@ -6,6 +6,7 @@ import "package:better_auth_flutter/src/core/config/config.dart";
 import "package:cookie_jar/cookie_jar.dart";
 import "package:http/http.dart" as http;
 import "package:path_provider/path_provider.dart";
+import 'dart:developer';
 
 class Api {
   static final hc = http.Client();
@@ -13,13 +14,17 @@ class Api {
   static late PersistCookieJar _cookieJar;
 
   static Future<void> init() async {
-    final cacheDir = await getApplicationCacheDirectory();
-    _cookieJar = PersistCookieJar(
-      storage: FileStorage("${cacheDir.path}/.cookies/"),
-    );
+    try {
+      final cacheDir = await getApplicationCacheDirectory();
+      _cookieJar = PersistCookieJar(
+        storage: FileStorage("${cacheDir.path}/.cookies/"),
+      );
+    } catch (e) {
+      log("Failed to initialize cookie jar: ${e.toString()}", error: e);
+    }
   }
 
-  static Future<(dynamic, Failure?)> sendRequest(
+  static Future<(dynamic, BetterAuthFailure?)> sendRequest(
     String path, {
     required MethodType method,
     String? host,
@@ -67,7 +72,7 @@ class Api {
           break;
       }
     } catch (e) {
-      return (null, Failure(code: BetterAuthError.unKnownError));
+      return (null, BetterAuthFailure(code: BetterAuthError.unKnownError));
     }
 
     final setCookieHeader = response.headers["set-cookie"];
@@ -94,7 +99,7 @@ class Api {
         } catch (e) {
           return (
             null,
-            Failure(
+            BetterAuthFailure(
               code: BetterAuthError.unKnownError,
               message: "Failed to parse response body",
             ),
@@ -110,7 +115,7 @@ class Api {
               !body.containsKey("message")) {
             return (
               null,
-              Failure(
+              BetterAuthFailure(
                 code: BetterAuthError.unKnownError,
                 message: "Invalid response format",
               ),
@@ -119,7 +124,7 @@ class Api {
 
           return (
             null,
-            Failure(
+            BetterAuthFailure(
               code: BetterAuthError.values.firstWhere(
                 (element) => element.code == body["code"],
               ),
@@ -129,7 +134,7 @@ class Api {
         } catch (e) {
           return (
             null,
-            Failure(
+            BetterAuthFailure(
               code: BetterAuthError.unKnownError,
               message: "Failed to parse response body",
             ),

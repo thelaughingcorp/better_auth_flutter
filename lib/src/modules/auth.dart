@@ -3,7 +3,8 @@ import "package:better_auth_flutter/src/core/local_storage/kv_store.dart";
 import "package:better_auth_flutter/src/core/local_storage/kv_store_keys.dart";
 
 class Auth {
-  static Future<(Map<String, dynamic>?, Failure?)> signUpWithEmailAndPassword({
+  static Future<(Map<String, dynamic>?, BetterAuthFailure?)>
+  signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
@@ -21,12 +22,15 @@ class Auth {
     } catch (e) {
       return (
         null,
-        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+        BetterAuthFailure(
+          code: BetterAuthError.unKnownError,
+          message: e.toString(),
+        ),
       );
     }
   }
 
-  static Future<(User?, Failure?)> signInWithEmailAndPassword({
+  static Future<(User?, BetterAuthFailure?)> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
@@ -40,7 +44,7 @@ class Auth {
       if (error != null) return (null, error);
 
       if (result is! Map<String, dynamic>) {
-        return (null, Failure(code: BetterAuthError.unKnownError));
+        return (null, BetterAuthFailure(code: BetterAuthError.unKnownError));
       }
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
@@ -49,12 +53,15 @@ class Auth {
     } catch (e) {
       return (
         null,
-        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+        BetterAuthFailure(
+          code: BetterAuthError.unKnownError,
+          message: e.toString(),
+        ),
       );
     }
   }
 
-  static Future<(User?, Failure?)> signInWithIdToken({
+  static Future<(User?, BetterAuthFailure?)> signInWithIdToken({
     required SocialProvider provider,
     required String idToken,
     required String accessToken,
@@ -73,22 +80,29 @@ class Auth {
       if (error != null) return (null, error);
 
       if (result is! Map<String, dynamic>) {
-        return (null, Failure(code: BetterAuthError.invalidResponse));
+        return (null, BetterAuthFailure(code: BetterAuthError.invalidResponse));
       }
 
       final user = User.fromMap(result["user"] as Map<String, dynamic>);
+
       await KVStore.set(KVStoreKeys.user, user.toJson());
 
+      await Future.delayed(const Duration(milliseconds: 1000));
+
+      await SessionManagement.getSession();
       return (user, null);
     } catch (e) {
       return (
         null,
-        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+        BetterAuthFailure(
+          code: BetterAuthError.unKnownError,
+          message: e.toString(),
+        ),
       );
     }
   }
 
-  static Future<(String?, Failure?)> socialSignIn({
+  static Future<(String?, BetterAuthFailure?)> socialSignIn({
     required SocialProvider provider,
     String? callbackUrl,
     String? newUserCallbackUrl,
@@ -97,6 +111,7 @@ class Auth {
     List<String>? scopes,
     String? requestSignUp,
     String? loginHint,
+    required String callbackUrlScheme,
   }) async {
     try {
       final (result, error) = await Api.sendRequest(
@@ -119,16 +134,27 @@ class Auth {
 
       final url = result["url"] as String?;
 
+      //TODO: Implement this
+
+      // final res = await FlutterWebAuth2.authenticate(
+      //   url: result!.toString(),
+      //   callbackUrlScheme: "$callbackUrlScheme:/",
+      //   options: FlutterWebAuth2Options(),
+      // );
+
       return (url, null);
     } catch (e) {
       return (
         null,
-        Failure(code: BetterAuthError.unKnownError, message: e.toString()),
+        BetterAuthFailure(
+          code: BetterAuthError.unKnownError,
+          message: e.toString(),
+        ),
       );
     }
   }
 
-  static Future<Failure?> signOut() async {
+  static Future<BetterAuthFailure?> signOut() async {
     try {
       final (result, error) = await Api.sendRequest(
         AppEndpoints.signOut,
@@ -138,18 +164,18 @@ class Auth {
       if (error != null) return error;
 
       if (result is! Map<String, dynamic>) {
-        return Failure(code: BetterAuthError.failedToSignOut);
+        return BetterAuthFailure(code: BetterAuthError.failedToSignOut);
       }
 
       if (result["success"] == false) {
-        return Failure(code: BetterAuthError.failedToSignOut);
+        return BetterAuthFailure(code: BetterAuthError.failedToSignOut);
       }
 
-      await KVStore.remove(KVStoreKeys.session);
+      await KVStore.clear();
 
       return null;
     } catch (e) {
-      return Failure(
+      return BetterAuthFailure(
         code: BetterAuthError.failedToSignOut,
         message: e.toString(),
       );

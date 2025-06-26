@@ -67,24 +67,24 @@ class Home extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                final (result, error) = await BetterAuth.instance.client
-                    .socialSignIn(
-                      provider: SocialProvider.google,
-                      callbackUrl: "/temp",
-                    );
+                // final (result, error) = await BetterAuth.instance.client
+                //     .socialSignIn(
+                //       provider: SocialProvider.google,
+                //       callbackUrl: "/temp",
+                //     );
 
-                if (error != null) {
-                  log(error.message.toString());
-                  return;
-                }
+                // if (error != null) {
+                //   log(error.message.toString());
+                //   return;
+                // }
 
-                final res = await FlutterWebAuth2.authenticate(
-                  url: result!.toString(),
-                  callbackUrlScheme:
-                      "com.googleusercontent.apps.455710607825-heimo9nsl1vpp4n98mg0uosg6731hlfk",
-                  options: FlutterWebAuth2Options(),
-                );
-                log("FlutterWebAuth2 result: $res");
+                // final res = await FlutterWebAuth2.authenticate(
+                //   url: result!.toString(),
+                //   callbackUrlScheme:
+                //       "com.googleusercontent.apps.455710607825-heimo9nsl1vpp4n98mg0uosg6731hlfk",
+                //   options: FlutterWebAuth2Options(),
+                // );
+                // log("FlutterWebAuth2 result: $res");
               },
               child: Text("Google Sign In with Callback"),
             ),
@@ -97,8 +97,6 @@ class Home extends StatelessWidget {
 
 class Repo {
   static final betterAuth = BetterAuth.instance.client;
-
-  static final GoogleSignIn googleSignIn = GoogleSignIn(serverClientId: "");
 
   static void signUp() async {
     final (result, error) = await BetterAuth.instance.client
@@ -139,49 +137,104 @@ class Repo {
       return;
     }
 
-    await googleSignIn.signOut();
+    // await googleSignIn.signOut();
 
     log("Signed out");
   }
 
   static void signInWithGoogle() async {
-    final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
-    if (googleSignInAccount == null) {
-      log("Google sign in cancelled");
-      return;
-    }
-
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
-
-    final accessToken = googleSignInAuthentication.accessToken;
-    final idToken = googleSignInAuthentication.idToken;
-
-    if (accessToken == null) {
-      log("Google access token is null");
-      return;
-    }
-
-    if (idToken == null) {
-      log("Google id token is null");
-      return;
-    }
-
-    final (res, err) = await BetterAuth.instance.client.signInWithIdToken(
-      provider: SocialProvider.google,
-      idToken: idToken,
-      accessToken: accessToken,
+    await googleSignIn.initialize(
+      clientId: "YOUR_MOBILE_CLIENT_ID",
+      serverClientId: "YOUR_WEB_CLIENT_ID",
     );
 
-    if (err != null) {
-      log(err.message.toString());
-      return;
-    }
+    googleSignIn.authenticationEvents.listen((event) async {
+      final GoogleSignInAccount? user = switch (event) {
+        GoogleSignInAuthenticationEventSignIn() => event.user,
+        GoogleSignInAuthenticationEventSignOut() => null,
+      };
 
-    log(res.toString());
+      if (user != null) {
+        log("User signed in: ${user.email}");
+
+        try {
+          final List<String> scopes = <String>["openid", "email", "profile"];
+
+          final GoogleSignInServerAuthorization? serverAuthorization =
+              await user.authorizationClient.authorizeServer(scopes);
+
+          if (serverAuthorization != null) {
+            final String serverAuthCode = serverAuthorization.serverAuthCode;
+
+            final (result, error) = await BetterAuth.instance.client
+                .signInWithIdToken(
+                  provider: SocialProvider.google,
+                  idToken: serverAuthCode,
+                );
+
+            if (error != null) {
+              log("Error: ${error.message}");
+            }
+
+            log("Sign in result: ${result?.toString()}");
+          } else {
+            log("Server authorization is null");
+          }
+        } on GoogleSignInException catch (e) {
+          log("Google Sign In Exception: ${e.toString()}");
+        } catch (e) {}
+      }
+    });
   }
+
+  // static void signInWithGoogle() async {
+  //   final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+
+  //   googleSignIn.initialize(clientId: "", serverClientId: "");
+
+  //   googleSignIn.authenticationEvents.listen((event) {});
+
+  //   final List<String> scopes = <String>["openid", "email", "profile"];
+
+  //   final GoogleSignInServerAuthorization? serverAuthorization =
+  //       await googleSignIn.authorizationClient.authorizeServer(scopes);
+
+  //   // if (googleSignInAccount == null) {
+  //   //   log("Google sign in cancelled");
+  //   //   return;
+  //   // }
+
+  //   // final GoogleSignInAuthentication googleSignInAuthentication =
+  //   //     await googleSignInAccount.authentication;
+
+  //   // final accessToken = "dvdsv";
+  //   // final idToken = googleSignInAuthentication.idToken;
+
+  //   // if (accessToken == null) {
+  //   //   log("Google access token is null");
+  //   //   return;
+  //   // }
+
+  //   // if (idToken == null) {
+  //   //   log("Google id token is null");
+  //   //   return;
+  //   // }
+
+  //   // final (res, err) = await BetterAuth.instance.client.signInWithIdToken(
+  //   //   provider: SocialProvider.google,
+  //   //   idToken: idToken,
+  //   //   accessToken: accessToken,
+  //   // );
+
+  //   // if (err != null) {
+  //   //   log(err.message.toString());
+  //   //   return;
+  //   // }
+
+  //   // log(res.toString());
+  // }
 
   static void getSession() async {
     final (session, error) = await BetterAuth.instance.client.getSession();

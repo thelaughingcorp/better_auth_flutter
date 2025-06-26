@@ -5,7 +5,9 @@ import "package:better_auth_flutter/src/core/api/data/models/api_failure.dart";
 import "package:better_auth_flutter/src/core/constants/app_endpoints.dart";
 
 class Verification {
-  static Future<Failure?> sendVerificationEmail({required String email}) async {
+  static Future<BetterAuthFailure?> sendVerificationEmail({
+    required String email,
+  }) async {
     try {
       final (result, error) = await Api.sendRequest(
         AppEndpoints.sendVerificationEmail,
@@ -18,16 +20,21 @@ class Verification {
       final status = result["status"] as bool;
 
       if (!status) {
-        return Failure(code: BetterAuthError.failedToSendVerificationEmail);
+        return BetterAuthFailure(
+          code: BetterAuthError.failedToSendVerificationEmail,
+        );
       }
 
       return null;
     } catch (e) {
-      return Failure(code: BetterAuthError.unKnownError, message: e.toString());
+      return BetterAuthFailure(
+        code: BetterAuthError.unKnownError,
+        message: e.toString(),
+      );
     }
   }
 
-  static Future<Failure?> verifyEmail({
+  static Future<BetterAuthFailure?> verifyEmail({
     required String verificationToken,
   }) async {
     try {
@@ -42,12 +49,15 @@ class Verification {
       final status = result["status"] as bool;
 
       if (!status) {
-        return Failure(code: BetterAuthError.failedToVerifyEmail);
+        return BetterAuthFailure(code: BetterAuthError.failedToVerifyEmail);
       }
 
       return null;
     } catch (e) {
-      return Failure(code: BetterAuthError.unKnownError, message: e.toString());
+      return BetterAuthFailure(
+        code: BetterAuthError.unKnownError,
+        message: e.toString(),
+      );
     }
   }
 }
