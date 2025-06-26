@@ -22,3 +22,7 @@
 
 * Add Social Sign In With All Providers (Redirection to be handled, using something like flutter_web_auth_2)
 * Added multiple social providers
+
+## 0.0.6
+
+* Minor fixes
