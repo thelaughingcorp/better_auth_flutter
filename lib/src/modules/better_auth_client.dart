@@ -20,11 +20,8 @@ class BetterAuthClient {
       return;
     }
 
-    log("User cache found: $userCache", name: "BetterAuthClient");
-
     user = User.fromJson(userCache);
 
-    log("BetterAuthClient initialized", name: "BetterAuthClient");
     final sessionCache = KVStore.get<String>(KVStoreKeys.session);
 
     if (sessionCache == null) {
@@ -32,9 +29,7 @@ class BetterAuthClient {
       return;
     }
 
-    log("Session cache found: $sessionCache", name: "BetterAuthClient");
     session = Session.fromJson(sessionCache);
-    SessionManagement.refreshSession(session!);
   }
 
   Session? _session;
@@ -101,4 +96,10 @@ class BetterAuthClient {
 
   Future<(List<Account>?, BetterAuthFailure?)> Function() listAccounts =
       Accounts.listAccounts;
+
+  Future<(String?, BetterAuthFailure?)> Function({
+    String? token,
+    String? password,
+  })
+  deleteUser = Auth.deleteUser;
 }

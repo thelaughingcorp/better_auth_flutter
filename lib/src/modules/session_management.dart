@@ -1,6 +1,5 @@
 import "dart:async";
 import "dart:developer";
-
 import "package:better_auth_flutter/src/core/api/api.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/error_type.dart";
 import "package:better_auth_flutter/src/core/api/data/enums/method_type.dart";
@@ -58,9 +57,11 @@ class SessionManagement {
   }
 
   static void refreshSession(Session session) async {
-    final isSessionValid = session.expiresAt.isBefore(DateTime.now());
+    // Refresh only when the current session is **expired**.
+    final isSessionExpired = session.expiresAt.isBefore(DateTime.now());
 
-    if (isSessionValid) return;
+    // Nothing to do if the session is still valid.
+    if (!isSessionExpired) return;
 
     final (result, error) = await getSession();
 
@@ -82,8 +83,10 @@ class SessionManagement {
   }
 
   static void startAutoRefreshTicker() {
-    startAutoRefreshTicker();
-    _refreshTimer = Timer.periodic(Duration(hours: 1), (timer) async {
+    // Ensure there's only ever a single active timer
+    _refreshTimer?.cancel();
+
+    _refreshTimer = Timer.periodic(const Duration(hours: 1), (timer) async {
       try {
         final (result, error) = await getSession();
         if (error != null) {

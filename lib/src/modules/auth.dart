@@ -181,4 +181,43 @@ class Auth {
       );
     }
   }
+
+  static Future<(String?, BetterAuthFailure?)> deleteUser({
+    String? token,
+    String? password,
+  }) async {
+    try {
+      final (result, error) = await Api.sendRequest(
+        AppEndpoints.deleteUser,
+        method: MethodType.post,
+        body: {
+          if (token != null) "token": token,
+          if (password != null) "password": password,
+        },
+      );
+
+      if (error != null) return (null, error);
+
+      final success = result["success"] as bool?;
+
+      if (success == false) {
+        return (
+          null,
+          BetterAuthFailure(code: BetterAuthError.failedToDeleteUser),
+        );
+      }
+
+      final message = result["message"] as String?;
+
+      return (message, null);
+    } catch (e) {
+      return (
+        null,
+        BetterAuthFailure(
+          code: BetterAuthError.unKnownError,
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 }

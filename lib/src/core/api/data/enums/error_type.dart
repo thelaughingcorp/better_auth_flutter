@@ -30,6 +30,7 @@ enum BetterAuthError {
   noGoogleUserFound,
   failedToSendVerificationEmail,
   failedToVerifyEmail,
+  failedToDeleteUser,
 }
 
 extension BetterAuthErrorMessageExtension on BetterAuthError {
@@ -97,6 +98,8 @@ extension BetterAuthErrorMessageExtension on BetterAuthError {
         return "Failed to send verification email";
       case BetterAuthError.failedToVerifyEmail:
         return "Failed to verify email";
+      case BetterAuthError.failedToDeleteUser:
+        return "Failed to delete user";
     }
   }
 }
@@ -166,6 +169,8 @@ extension BetterAuthErrorExtension on BetterAuthError {
         return "FAILED_TO_SEND_VERIFICATION_EMAIL";
       case BetterAuthError.failedToVerifyEmail:
         return "FAILED_TO_VERIFY_EMAIL";
+      case BetterAuthError.failedToDeleteUser:
+        return "FAILED_TO_DELETE_USER";
     }
   }
 }

@@ -7,4 +7,5 @@ class AppEndpoints {
   static const String listAccounts = "/list-accounts";
   static const String sendVerificationEmail = "/send-verification-email";
   static const String verifyEmail = "/verify-email";
+  static const String deleteUser = "/delete-user";
 }
