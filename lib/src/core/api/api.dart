@@ -12,17 +12,22 @@ class Api {
   static final hc = http.Client();
 
   static late PersistCookieJar _cookieJar;
+  
+  static String _basePath = "/api/auth";
 
-  static Future<void> init() async {
+  static Future<void> init({String basePath = "/api/auth"}) async {
     try {
       final cacheDir = await getApplicationCacheDirectory();
       _cookieJar = PersistCookieJar(
         storage: FileStorage("${cacheDir.path}/.cookies/"),
       );
+      _basePath = basePath;
     } catch (e) {
       log("Failed to initialize cookie jar: ${e.toString()}", error: e);
     }
   }
+  
+  static String get basePath => _basePath;
 
   static Future<(dynamic, BetterAuthFailure?)> sendRequest(
     String path, {
@@ -44,7 +49,7 @@ class Api {
     final Uri uri = Uri(
       scheme: Config.scheme,
       host: host,
-      path: "/api/auth$path",
+      path: "$_basePath$path",
       queryParameters: queryParameters,
       port: Config.port,
     );
@@ -82,7 +87,7 @@ class Api {
             return Cookie.fromSetCookieValue(cookieString.trim());
           }).toList();
 
-      bool isAuthRoute = uri.path.contains("/api/auth");
+      bool isAuthRoute = uri.path.contains(_basePath);
       if (isAuthRoute) {
         final tempUri = Uri(scheme: uri.scheme, host: uri.host);
         await _cookieJar.saveFromResponse(tempUri, cookiesList);

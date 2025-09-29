@@ -10,6 +10,7 @@ void main() async {
     baseUrl: Uri.parse(
       "https://6a2d-2409-40d0-12e2-458d-bc7a-1ebc-8342-ffae.ngrok-free.app",
     ),
+    basePath: "/api/v1/auth",
   );
   runApp(const App());
 }

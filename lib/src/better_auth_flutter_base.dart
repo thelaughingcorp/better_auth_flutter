@@ -21,10 +21,10 @@ class BetterAuth {
     return _client;
   }
 
-  static Future<void> init({required Uri baseUrl}) async {
+  static Future<void> init({required Uri baseUrl, String basePath = "/api/auth"}) async {
     if (_isInitialized) return;
     await KVStore.init();
-    await Api.init();
+    await Api.init(basePath: basePath);
     Config.initialize(uri: baseUrl);
     _isInitialized = true;
   }
