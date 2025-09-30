@@ -1,8 +1,6 @@
 # better_auth_flutter
 
-Flutter client-side SDK for Better Auth — simplifies integration with the Better Auth backend. Supports email/password authentication, social login, session management, and secure storage.
-
-P.S if you have any suggestions or want to contribute to this, reach out to me [https://x.com/ekaksh_janweja](here)
+Flutter client-side SDK for Better Auth — simplifies integration with the Better Auth backend. Supports email/password authentication, social login, session management, and secure storage.( Modified For Kimino Client )
 
 ## Features
 
